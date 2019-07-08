@@ -41,7 +41,7 @@ class MyWebView @JvmOverloads constructor(
         dumpMessage("onOverScrolled scrollX=" + scrollX + ";scrollY=" + scrollY
                 + ";clampedX=" + clampedX + ";clampedY=" + clampedY)
         if (clampedX) {
-            if (scrollParent != null){
+            if (scrollParent == null){
                 scrollParent = findViewParentIfNeeds(this, 10)
             }
             scrollParent?.requestDisallowInterceptTouchEvent(false)
