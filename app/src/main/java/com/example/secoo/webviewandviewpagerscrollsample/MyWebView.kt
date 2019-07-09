@@ -1,26 +1,18 @@
 package com.example.secoo.webviewandviewpagerscrollsample
 
 import android.content.Context
-import android.os.Build
-import android.support.annotation.RequiresApi
-import android.support.v4.view.ViewPager
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewParent
 import android.webkit.WebView
-import android.widget.AbsListView
-import android.widget.GridView
-import android.widget.HorizontalScrollView
-import android.widget.ScrollView
 
 class MyWebView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : WebView(context, attrs, defStyleAttr) {
 
-    private var scrollParent: ViewGroup? = null
+    private var scrollableParent: ViewGroup? = null
 
     private fun dumpMessage(message: String) {
         Log.i(LOGTAG, "dumpMessage message=$message")
@@ -29,10 +21,10 @@ class MyWebView @JvmOverloads constructor(
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (event.action == MotionEvent.ACTION_DOWN) {
-            if (scrollParent == null){
-                scrollParent = findViewParentIfNeeds(this, 10)
+            if (scrollableParent == null){
+                scrollableParent = findViewParentIfNeeds(this, 10)
             }
-            scrollParent?.requestDisallowInterceptTouchEvent(true)
+            scrollableParent?.requestDisallowInterceptTouchEvent(true)
         }
         return super.onTouchEvent(event)
     }
@@ -41,10 +33,10 @@ class MyWebView @JvmOverloads constructor(
         dumpMessage("onOverScrolled scrollX=" + scrollX + ";scrollY=" + scrollY
                 + ";clampedX=" + clampedX + ";clampedY=" + clampedY)
         if (clampedX) {
-            if (scrollParent == null){
-                scrollParent = findViewParentIfNeeds(this, 10)
+            if (scrollableParent == null){
+                scrollableParent = findViewParentIfNeeds(this, 10)
             }
-            scrollParent?.requestDisallowInterceptTouchEvent(false)
+            scrollableParent?.requestDisallowInterceptTouchEvent(false)
         }
         super.onOverScrolled(scrollX, scrollY, clampedX, clampedY)
     }
@@ -58,7 +50,7 @@ class MyWebView @JvmOverloads constructor(
             if (canScrollHorizontal(parent)){
                 return parent
             }else {
-                //增加最大地柜深度判断，防止出现ANR或者异常
+                //增加最大递归深度判断，防止出现ANR或者异常
                 findViewParentIfNeeds(parent, depth-1)
             }
         }
